@@ -8,9 +8,8 @@ object FirstSpark {
       println("请输入需要进行")
       System.exit(0)
     }
-    var conf =new SparkConf()
-    conf.setMaster("local")
-    conf.setAppName("diyige")
+    val conf = new SparkConf().setAppName("diyige").setMaster("local")
+
 
     var sc= new SparkContext(conf)
     var rdd=sc.textFile(args(0))
