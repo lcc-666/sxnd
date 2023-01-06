@@ -48,13 +48,30 @@ object AccessAnalysis {
     val hpv=tsGroupData.mapValues(x=>x.size)
 //    hpv.foreach(println)
 
-    val uv=cleanData.values.map(x=>x._2).countByValue()
-    uv.foreach(println)
+//    val uv=cleanData.map(x=>{
+//      (x._1,x._2._2)
+//    }).countByValue()
+//    uv.foreach(println)
+//
+//
+//    val ip=cleanData.values.map(x=>x._1).countByValue()
+//    ip.foreach(println)
 
+    val uv=cleanData.map(x=>x._2._2).distinct().count()
+//    println(uv)
 
-    val ip=cleanData.values.map(x=>x._1).countByValue()
-    ip.foreach(println)
+    val puv=tsGroupData.mapValues(x=>{
+      val name=x.map(y=>y._2)
+      name.iterator.toList.distinct.size
+    })
 
+    val ip =cleanData.map(x=>x._2._1).distinct().count()
+
+    val hip =tsGroupData.mapValues(x=>{
+      val ip=x.map(y=>y._1)
+      ip.iterator.toList.distinct.size
+    })
+    hip.foreach(println)
 
   }
 
