@@ -14,22 +14,22 @@ object AccessAnalysis {
 
     conf.setMaster("local").setAppName("AccessAnalysis")
 
-    var sc= new SparkContext(conf)
-//    var rdd =sc.textFile("/home/chaoge/Downloads/user_defined.log")
-//    var rdd =sc.textFile("/home/chaoge/Downloads/user_defined_2022-02-15.log")
-      var rdd =sc.textFile("./src/main/scala/com/briup/sxnd/user_defined_2022-02-15.log")
+    val sc = new SparkContext(conf)
+    //    var rdd =sc.textFile("/home/chaoge/Downloads/user_defined.log")
+    //    var rdd =sc.textFile("/home/chaoge/Downloads/user_defined_2022-02-15.log")
+    val rdd = sc.textFile("./src/main/scala/com/briup/sxnd/user_defined_2022-02-15.log")
 
-    var allData = rdd.map(mes=>{
-      var datas = mes.replace("||",",").split(",")
+    val allData = rdd.map(mes => {
+      val datas = mes.replace("||", ",").split(",")
 
-      val ts =datas(0).replace(".","")
+      val ts = datas(0).replace(".", "")
 
-      val calendar =Calendar.getInstance()
+      val calendar = Calendar.getInstance()
       calendar.setTimeInMillis(ts.toLong)
       ((calendar.get(Calendar.DAY_OF_MONTH),
 
-//        calendar.get(Calendar.HOUR_OF_DAY)),(datas(17),datas(16),datas(19),(ts.toLong)))
-        calendar.get(Calendar.HOUR_OF_DAY)),(datas(17),datas(15),datas(19),(ts.toLong)))
+        //        calendar.get(Calendar.HOUR_OF_DAY)),(datas(17),datas(16),datas(19),(ts.toLong)))
+        calendar.get(Calendar.HOUR_OF_DAY)), (datas(17), datas(15), datas(19), (ts.toLong)))
 
     })
 //    allData.foreach(println)
