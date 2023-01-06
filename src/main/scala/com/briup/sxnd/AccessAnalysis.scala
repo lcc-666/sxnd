@@ -1,5 +1,3 @@
-package com.briup.sxnd
-
 import org.apache.log4j.{Level, Logger}
 import org.apache.spark.{SparkConf, SparkContext}
 
@@ -11,13 +9,12 @@ object AccessAnalysis {
     Logger.getLogger("org").setLevel(Level.ERROR)
 
     val conf =new SparkConf()
-
     conf.setMaster("local").setAppName("AccessAnalysis")
 
     val sc = new SparkContext(conf)
-    //    var rdd =sc.textFile("/home/chaoge/Downloads/user_defined.log")
-    //    var rdd =sc.textFile("/home/chaoge/Downloads/user_defined_2022-02-15.log")
-    val rdd = sc.textFile("./src/main/scala/com/briup/sxnd/user_defined_2022-02-15.log")
+
+        var rdd =sc.textFile("./src/main/scala/com/briup/sxnd/user_defined.log")
+//    val rdd = sc.textFile("./src/main/scala/com/briup/sxnd/user_defined_2022-02-15.log")
 
     val allData = rdd.map(mes => {
       val datas = mes.replace("||", ",").split(",")
@@ -28,8 +25,8 @@ object AccessAnalysis {
       calendar.setTimeInMillis(ts.toLong)
       ((calendar.get(Calendar.DAY_OF_MONTH),
 
-        //        calendar.get(Calendar.HOUR_OF_DAY)),(datas(17),datas(16),datas(19),(ts.toLong)))
-        calendar.get(Calendar.HOUR_OF_DAY)), (datas(17), datas(15), datas(19), (ts.toLong)))
+        calendar.get(Calendar.HOUR_OF_DAY)),(datas(17),datas(16),datas(19),(ts.toLong)))
+//        calendar.get(Calendar.HOUR_OF_DAY)), (datas(17), datas(15), datas(19), (ts.toLong)))
 
     })
 //    allData.foreach(println)
@@ -71,7 +68,32 @@ object AccessAnalysis {
       val ip=x.map(y=>y._1)
       ip.iterator.toList.distinct.size
     })
-    hip.foreach(println)
+//    hip.foreach(println)
+
+    val cv =cleanData.map{
+      case (v1,v2) =>(v1,(v1,v2._3))
+    }.values.filter(x=>x._2.contains("shopCar") || x._2.contains("order") ||
+      x._2.contains("orderSure") || x._2.contains("confirm")).groupByKey().map{
+      case (v1,v2) => (v1,v2.size)
+    }
+//    cv.foreach(println)
+
+    val only = cleanData.map{
+      case (v1,v2) =>((v1,v2._2),(v1,1))
+    }.groupByKey().values.filter(x=>x.size==1).flatMap(x=>x).groupByKey().map{
+      case (v1,v2) => (v1,v2.size)
+    }
+//    only.foreach(println)
+
+    val all =cleanData.groupByKey().map{
+      case (v1,v2)=>(v1,v2.size)
+    }
+//    all.foreach(println)
+
+    val icm = only.rightOuterJoin(all).map{
+      case (v1,v2) =>(v1,v2._1.getOrElse(0).toDouble/v2._2.toDouble)
+    }
+    icm.foreach(println)
 
   }
 
