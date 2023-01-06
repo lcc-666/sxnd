@@ -13,11 +13,6 @@
   </properties>
 
   <dependencies>
-    <dependency>
-      <groupId>org.scala-lang</groupId>
-      <artifactId>scala-library</artifactId>
-      <version>${scala.version}</version>
-    </dependency>
 
     <!-- Test -->
     <dependency>
@@ -31,9 +26,6 @@
       <artifactId>spark-core_2.11</artifactId>
       <version>${spark.version}</version>
     </dependency>
-    <!--引入Spark-sql组件依赖-->
-
-    <!--引入Kafka的依赖-->
 
 
 
