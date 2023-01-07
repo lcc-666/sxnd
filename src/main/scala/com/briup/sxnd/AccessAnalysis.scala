@@ -15,8 +15,8 @@ object AccessAnalysis {
     val sc = new SparkContext(conf)
 
 //        var rdd =sc.textFile("./src/main/scala/com/briup/sxnd/user_defined.log")
-    val rdd = sc.textFile("./src/main/scala/com/briup/sxnd/user_defined_2022-02-15.log")
-//      val rdd = sc.textFile(args(0))
+//    val rdd = sc.textFile("./src/main/scala/com/briup/sxnd/user_defined_2022-02-15.log")
+      val rdd = sc.textFile(args(0))
 
 
     val allData = rdd.map(mes => {
