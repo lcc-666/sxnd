@@ -133,7 +133,7 @@ object AccessAnalysis {
           prep.setInt(3,x._2)
           prep.setInt(4,x._3)
           prep.setInt(5,x._4)
-          prep.setDouble(6,x._5.asInstanceOf[Double])
+          prep.setDouble(6,x._5.toString.toDouble)
           prep.setInt(7,x._6)
           prep.setDouble(8,x._7.toDouble)
           prep.execute()
