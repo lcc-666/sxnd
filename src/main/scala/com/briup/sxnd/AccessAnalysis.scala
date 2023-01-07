@@ -15,8 +15,8 @@ object AccessAnalysis {
     val sc = new SparkContext(conf)
 
 //        var rdd =sc.textFile("./src/main/scala/com/briup/sxnd/user_defined.log")
-//    val rdd = sc.textFile("./src/main/scala/com/briup/sxnd/user_defined_2022-02-15.log")
-      val rdd = sc.textFile(args(0))
+    val rdd = sc.textFile("./src/main/scala/com/briup/sxnd/user_defined_2022-02-15.log")
+//      val rdd = sc.textFile(args(0))
 
 
     val allData = rdd.map(mes => {
@@ -110,21 +110,21 @@ object AccessAnalysis {
 
     val data = hpv.leftOuterJoin(puv)
       .leftOuterJoin(hip).leftOuterJoin(haat).leftOuterJoin(cv)
-      .leftOuterJoin(icm).map{
+      .leftOuterJoin(icm)
+      .map{
       case (v1,v2)=>(v1,v2._1._1._1._1._1,v2._1._1._1._1._2.getOrElse(0),v2._1._1._1._2.getOrElse(0)
         ,v2._1._1._2.getOrElse(0),v2._1._2.getOrElse(0),v2._2.getOrElse(0.0))
     }
-
-    data.foreach(println)
+//    data.foreach(println)
 
     data.foreachPartition{
       iter=>{
         val driver = "com.mysql.jdbc.Driver"
-        val url = "dbc:mysql://localhost:3306/estore3"
+        val url = "jdbc:mysql://localhost:3306/estore3"
         val user = "briup"
         val passwd = "briup"
         Class.forName(driver)
-        val coon =DriverManager.getConnection(url,url,passwd)
+        val coon =DriverManager.getConnection(url,user,passwd)
         val sql= "insert into ref_data(day,hour,pv,uv,ip,times,cv,icm) values(?,?,?,?,?,?,?,?)"
         val prep = coon.prepareStatement(sql)
         iter.foreach(x=>{
@@ -133,7 +133,7 @@ object AccessAnalysis {
           prep.setInt(3,x._2)
           prep.setInt(4,x._3)
           prep.setInt(5,x._4)
-          prep.setDouble(6,x._5.toDouble)
+          prep.setDouble(6,x._5.asInstanceOf[Double])
           prep.setInt(7,x._6)
           prep.setDouble(8,x._7.toDouble)
           prep.execute()
@@ -143,5 +143,4 @@ object AccessAnalysis {
       }
     }
   }
-
 }
